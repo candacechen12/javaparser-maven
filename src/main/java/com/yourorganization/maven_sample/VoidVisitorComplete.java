@@ -1,4 +1,4 @@
-package org.javaparser.examples.chapter2;
+package com.yourorganization.maven_sample;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -14,7 +14,8 @@ import java.util.List;
 public class VoidVisitorComplete {
 
     private static final String FILE_PATH =
-            "/u/clc5uy/Downloads/javaparser-maven/src/main/resources/Test.java";
+            // "/u/clc5uy/Downloads/javaparser-maven/src/main/resources/Test.java";
+            "/u/clg8rd/cs6501/javaparser-maven/src/main/resources/Test.java";
 
     public static void main(String[] args) throws Exception {
 
