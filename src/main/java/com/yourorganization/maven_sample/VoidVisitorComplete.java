@@ -19,18 +19,18 @@ import java.util.Scanner;
 
 public class VoidVisitorComplete {
 
-    private static final String SOURCE_CODE_FILE_PATH =
-        "/u/clc5uy/Downloads/javaparser-maven/src/main/resources/TestSourceCode.java";
+    // private static final String SOURCE_CODE_FILE_PATH =
+    //     "/u/clc5uy/Downloads/javaparser-maven/src/main/resources/TestSourceCode.java";
     
-    private static final String ERROR_LINE_NUMS_FILE_PATH =
-        "/u/clc5uy/Downloads/javaparser-maven/src/main/resources/TestErrorLineNumOutput.txt";
+    // private static final String ERROR_LINE_NUMS_FILE_PATH =
+    //     "/u/clc5uy/Downloads/javaparser-maven/src/main/resources/TestErrorLineNumOutput.txt";
 
     public static void main(String[] args) throws Exception {
         /*------------------------------------------------------------------------------------------------
             SOURCE CODE PARSER
         ------------------------------------------------------------------------------------------------ */
         // COMPILATION UNIT
-        CompilationUnit cu = StaticJavaParser.parse(Files.newInputStream(Paths.get(SOURCE_CODE_FILE_PATH)));
+        CompilationUnit cu = StaticJavaParser.parse(Files.newInputStream(Paths.get(args[0])));
 
         // METHOD NAME COLLECTOR
         List<String> methodNames = new ArrayList<>();
@@ -52,9 +52,9 @@ public class VoidVisitorComplete {
         }
 
         // PRINT TREEMAP OF METHOD NAMES AND LINE NUMBERS
-        System.out.println("METHOD NAME AND LINE NUMBERS");
-        methodNameLineMap.entrySet().forEach(entrySet -> System.out.println(entrySet.getKey() + " : " +  entrySet.getValue()));
-        System.out.println();
+        // System.out.println("METHOD NAME AND LINE NUMBERS");
+        // methodNameLineMap.entrySet().forEach(entrySet -> System.out.println(entrySet.getKey() + " : " +  entrySet.getValue()));
+        // System.out.println();
 
         List<String> classNames = new ArrayList<String>();
         VoidVisitor<List<String>> classNameCollector = new ClassNameCollector();
@@ -74,9 +74,9 @@ public class VoidVisitorComplete {
         }
 
         // PRINT LINKED HASH MAP OF METHOD NAMES AND LINE NUMBERS
-        System.out.println("CLASS NAME AND LINE NUMBERS");
-        classNameLineMap.entrySet().forEach(entrySet -> System.out.println(entrySet.getKey() + " : " +  entrySet.getValue()));
-        System.out.println();
+        // System.out.println("CLASS NAME AND LINE NUMBERS");
+        // classNameLineMap.entrySet().forEach(entrySet -> System.out.println(entrySet.getKey() + " : " +  entrySet.getValue()));
+        // System.out.println();
 
         /*------------------------------------------------------------------------------------------------
             HANDLING INPUT
@@ -86,22 +86,22 @@ public class VoidVisitorComplete {
 		
         // READ INPUT FILE AND ADD LINE NUMBERS TO errorLineNums
         try {
-			Scanner scanner = new Scanner(new File(ERROR_LINE_NUMS_FILE_PATH));
-            System.out.println("ERROR LINE NUMBERS");
+			Scanner scanner = new Scanner(new File(args[1]));
+            // System.out.println("ERROR LINE NUMBERS");
 			while (scanner.hasNextLine()) {
                 int lineVal = Integer.parseInt(scanner.nextLine());
-				System.out.println(lineVal);
+				// System.out.println(lineVal);
                 errorLineNums.add(lineVal);
 			}
 			scanner.close();
-            System.out.println();
+            // System.out.println();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 
         //System.out.println(errorLineNums);
         
-        System.out.println("CLASS NAMES AND METHODS CONTAINING ERRORS");
+        // System.out.println("CLASS NAMES AND METHODS CONTAINING ERRORS");
         List<Entry> methodsContainingErrors = new ArrayList<Entry>();
         errorLineNums.forEach(lineNum -> {
             Entry methodEntry = methodNameLineMap.floorEntry(lineNum);
