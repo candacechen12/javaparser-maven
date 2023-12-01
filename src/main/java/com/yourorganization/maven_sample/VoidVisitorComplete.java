@@ -26,90 +26,104 @@ public class VoidVisitorComplete {
     //     "/u/clc5uy/Downloads/javaparser-maven/src/main/resources/TestErrorLineNumOutput.txt";
 
     public static void main(String[] args) throws Exception {
-        /*------------------------------------------------------------------------------------------------
-            SOURCE CODE PARSER
-        ------------------------------------------------------------------------------------------------ */
-        // COMPILATION UNIT
-        CompilationUnit cu = StaticJavaParser.parse(Files.newInputStream(Paths.get(args[0])));
+        /* ARGS
+            1. Error line num txt file folder
+            2. Source code folder
+        */
+        File dir = new File(args[0]);
+        File[] directoryListing = dir.listFiles();
+        for (File child : directoryListing) {
+            File error_line_nums_file = child;
+            String error_line_nums_file_name = error_line_nums_file.getName();
+            // System.out.println(error_line_nums_file.getName());
 
-        // METHOD NAME COLLECTOR
-        List<String> methodNames = new ArrayList<>();
-        VoidVisitor<List<String>> methodNameCollector = new MethodNameCollector();
-        methodNameCollector.visit(cu, methodNames);
-        
-        // LINE NUMBER COLLECTOR
-        List<String> methodLineNumbers = new ArrayList<String>();
-        VoidVisitor<List<String>> methodLineNumberCollector = new MethodLineNumberCollector();
-        methodLineNumberCollector.visit(cu, methodLineNumbers);
+            /*------------------------------------------------------------------------------------------------
+                SOURCE CODE PARSER
+            ------------------------------------------------------------------------------------------------ */
+            
+            // COMPILATION UNIT
+            // System.out.println(args[1] + "/" + error_line_nums_file_name.split("%")[0]);
+            CompilationUnit cu = StaticJavaParser.parse(Files.newInputStream(Paths.get(args[1] + "/" + error_line_nums_file_name.split("%")[0])));
 
-        // ADD METHOD NAMES AND LINE NUMS TO TREEMAP
-        // KEY: STARTING LINE NUMBER
-        // VALUE: METHOD NAME
-        TreeMap<Integer, String> methodNameLineMap = new TreeMap<Integer, String>();
-        for(int i = 0; i < methodNames.size(); i++){
-            // System.out.println(methodNames.get(i) + " : " + lineNumbers.get(i));
-            methodNameLineMap.put(Integer.parseInt(methodLineNumbers.get(i)), methodNames.get(i));
-        }
+            // METHOD NAME COLLECTOR
+            List<String> methodNames = new ArrayList<>();
+            VoidVisitor<List<String>> methodNameCollector = new MethodNameCollector();
+            methodNameCollector.visit(cu, methodNames);
+            
+            // LINE NUMBER COLLECTOR
+            List<String> methodLineNumbers = new ArrayList<String>();
+            VoidVisitor<List<String>> methodLineNumberCollector = new MethodLineNumberCollector();
+            methodLineNumberCollector.visit(cu, methodLineNumbers);
 
-        // PRINT TREEMAP OF METHOD NAMES AND LINE NUMBERS
-        // System.out.println("METHOD NAME AND LINE NUMBERS");
-        // methodNameLineMap.entrySet().forEach(entrySet -> System.out.println(entrySet.getKey() + " : " +  entrySet.getValue()));
-        // System.out.println();
+            // ADD METHOD NAMES AND LINE NUMS TO TREEMAP
+            // KEY: STARTING LINE NUMBER
+            // VALUE: METHOD NAME
+            TreeMap<Integer, String> methodNameLineMap = new TreeMap<Integer, String>();
+            for(int i = 0; i < methodNames.size(); i++){
+                // System.out.println(methodNames.get(i) + " : " + methodLineNumbers.get(i));
+                methodNameLineMap.put(Integer.parseInt(methodLineNumbers.get(i)), methodNames.get(i));
+            }
 
-        List<String> classNames = new ArrayList<String>();
-        VoidVisitor<List<String>> classNameCollector = new ClassNameCollector();
-        classNameCollector.visit(cu, classNames);
-
-        List<String> classLineNums= new ArrayList<String>();
-        VoidVisitor<List<String>> classLineNumberCollector = new ClassLineNumberCollector();
-        classLineNumberCollector.visit(cu, classLineNums);
-        
-        // ADD CLASS NAMES AND LINE NUMS TO TREE MAP
-        // KEY: STARTING LINE NUMBER
-        // VALUE: METHOD NAME
-        TreeMap<Integer, String> classNameLineMap = new TreeMap<Integer, String>();
-        for(int i = 0; i < classNames.size(); i++){
-            // System.out.println(classNames.get(i) + " : " + classLineNums.get(i));
-            classNameLineMap.put(Integer.parseInt(classLineNums.get(i)), classNames.get(i));
-        }
-
-        // PRINT LINKED HASH MAP OF METHOD NAMES AND LINE NUMBERS
-        // System.out.println("CLASS NAME AND LINE NUMBERS");
-        // classNameLineMap.entrySet().forEach(entrySet -> System.out.println(entrySet.getKey() + " : " +  entrySet.getValue()));
-        // System.out.println();
-
-        /*------------------------------------------------------------------------------------------------
-            HANDLING INPUT
-        ------------------------------------------------------------------------------------------------ */ 
-        // LIST TO HOLD LINE NUMBERS OF ERRORS FROM INPUT FILE (PMD OUTPUT)
-        ArrayList<Integer> errorLineNums = new ArrayList<Integer>();
-		
-        // READ INPUT FILE AND ADD LINE NUMBERS TO errorLineNums
-        try {
-			Scanner scanner = new Scanner(new File(args[1]));
-            // System.out.println("ERROR LINE NUMBERS");
-			while (scanner.hasNextLine()) {
-                int lineVal = Integer.parseInt(scanner.nextLine());
-				// System.out.println(lineVal);
-                errorLineNums.add(lineVal);
-			}
-			scanner.close();
+            // PRINT TREEMAP OF METHOD NAMES AND LINE NUMBERS
+            // System.out.println("METHOD NAME AND LINE NUMBERS");
+            // methodNameLineMap.entrySet().forEach(entrySet -> System.out.println(entrySet.getKey() + " : " +  entrySet.getValue()));
             // System.out.println();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
 
-        //System.out.println(errorLineNums);
-        
-        // System.out.println("CLASS NAMES AND METHODS CONTAINING ERRORS");
-        List<Entry> methodsContainingErrors = new ArrayList<Entry>();
-        errorLineNums.forEach(lineNum -> {
-            Entry methodEntry = methodNameLineMap.floorEntry(lineNum);
-            int entryKey = (int)methodEntry.getKey();
-            Entry classEntry = classNameLineMap.floorEntry(entryKey);
-            String className = classEntry.getValue().toString();
-            System.out.println(className + ":" + methodEntry.getValue().toString());
-        });
+            List<String> classNames = new ArrayList<String>();
+            VoidVisitor<List<String>> classNameCollector = new ClassNameCollector();
+            classNameCollector.visit(cu, classNames);
+
+            List<String> classLineNums= new ArrayList<String>();
+            VoidVisitor<List<String>> classLineNumberCollector = new ClassLineNumberCollector();
+            classLineNumberCollector.visit(cu, classLineNums);
+            
+            // ADD CLASS NAMES AND LINE NUMS TO TREE MAP
+            // KEY: STARTING LINE NUMBER
+            // VALUE: METHOD NAME
+            TreeMap<Integer, String> classNameLineMap = new TreeMap<Integer, String>();
+            for(int i = 0; i < classNames.size(); i++){
+                // System.out.println(classNames.get(i) + " : " + classLineNums.get(i));
+                classNameLineMap.put(Integer.parseInt(classLineNums.get(i)), classNames.get(i));
+            }
+
+            // PRINT LINKED HASH MAP OF METHOD NAMES AND LINE NUMBERS
+            // System.out.println("CLASS NAME AND LINE NUMBERS");
+            // classNameLineMap.entrySet().forEach(entrySet -> System.out.println(entrySet.getKey() + " : " +  entrySet.getValue()));
+            // System.out.println();
+
+            /*------------------------------------------------------------------------------------------------
+                HANDLING INPUT
+            ------------------------------------------------------------------------------------------------ */ 
+            // LIST TO HOLD LINE NUMBERS OF ERRORS FROM INPUT FILE (PMD OUTPUT)
+            ArrayList<Integer> errorLineNums = new ArrayList<Integer>();
+            
+            // READ INPUT FILE AND ADD LINE NUMBERS TO errorLineNums
+            try {
+                Scanner scanner = new Scanner(error_line_nums_file);
+                // System.out.println("ERROR LINE NUMBERS");
+                while (scanner.hasNextLine()) {
+                    int lineVal = Integer.parseInt(scanner.nextLine());
+                    // System.out.println(lineVal);
+                    errorLineNums.add(lineVal);
+                }
+                scanner.close();
+                // System.out.println();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            //System.out.println(errorLineNums);
+
+            // System.out.println("CLASS NAMES AND METHODS CONTAINING ERRORS");
+            List<Entry> methodsContainingErrors = new ArrayList<Entry>();
+            errorLineNums.forEach(lineNum -> {
+                Entry methodEntry = methodNameLineMap.floorEntry(lineNum);
+                int entryKey = (int)methodEntry.getKey();
+                Entry classEntry = classNameLineMap.floorEntry(entryKey);
+                String className = classEntry.getValue().toString();
+                System.out.println(className + ":" + methodEntry.getValue().toString());
+            });
+        }
     }
 
     private static class MethodNameCollector extends VoidVisitorAdapter<List<String>> {
