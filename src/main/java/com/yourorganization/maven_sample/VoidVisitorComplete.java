@@ -43,7 +43,9 @@ public class VoidVisitorComplete {
             
             // COMPILATION UNIT
             // System.out.println(args[1] + "/" + error_line_nums_file_name.split("%")[0]);
-            CompilationUnit cu = StaticJavaParser.parse(Files.newInputStream(Paths.get(args[1] + "/" + error_line_nums_file_name.split("%")[0])));
+            String source_code_path = error_line_nums_file_name.split("&")[0];
+            source_code_path = source_code_path.replace("&", "/");
+            CompilationUnit cu = StaticJavaParser.parse(Files.newInputStream(Paths.get(args[1] + "/" + source_code_path)));
 
             // METHOD NAME COLLECTOR
             List<String> methodNames = new ArrayList<>();
