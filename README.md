@@ -1,5 +1,6 @@
-JavaParser and Maven sample
+JavaParser and Maven Project for Oxygenator
 ---
+**THIS REPO IS FORKED FROM THE ORIGINAL `JAVAPARSER AND MAVEN PROJECT SAMPLE` **
 
 A fully working sample Maven project that parses and generates code with [JavaParser](http://www.javaparser.org)
 
